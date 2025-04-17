@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'DanidinCondensed';
+    src: url('./DanidinCondensed-Regular.woff2') format('woff2'),
+        url('./DanidinCondensed-Regular.woff') format('woff'),
+        url('./DanidinCondensed-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DanidinCondensed';
+    src: url('./DanidinCondensed-Bold.woff2') format('woff2'),
+        url('./DanidinCondensed-Bold.woff') format('woff'),
+        url('./DanidinCondensed-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Apply the font to all headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'DanidinCondensed', sans-serif;
+}
