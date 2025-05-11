@@ -21,6 +21,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import SEO from './components/SEO';
 import { siteText } from './config';
+import { addLeadToBrevo, LeadContact } from './services/brevoService';
 
 function SocialHeader() {
 	return (
@@ -187,12 +188,66 @@ function App() {
 	const [formData, setFormData] = useState({
 		name: '',
 		phone: '',
+		email: '',
 		type: 'license_suspension',
 	});
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const [formStatus, setFormStatus] = useState({
+		submitting: false,
+		success: false,
+		error: false,
+		message: '',
+	});
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		alert('הטופס נשלח בהצלחה! נחזור אליך בהקדם.');
+		setFormStatus({
+			submitting: true,
+			success: false,
+			error: false,
+			message: '',
+		});
+
+		try {
+			// Prepare lead contact data
+			const leadData: LeadContact = {
+				name: formData.name,
+				phone: formData.phone,
+				email: formData.email,
+				type: formData.type,
+				source: 'website-contact-form',
+			};
+
+			// Send the lead to Brevo
+			const success = await addLeadToBrevo(leadData);
+
+			if (success) {
+				setFormStatus({
+					submitting: false,
+					success: true,
+					error: false,
+					message: siteText.contactSection.form.success,
+				});
+
+				// Reset the form after successful submission
+				setFormData({
+					name: '',
+					phone: '',
+					email: '',
+					type: 'license_suspension',
+				});
+			} else {
+				throw new Error('Failed to add contact to Brevo');
+			}
+		} catch (error) {
+			console.error('Form submission error:', error);
+			setFormStatus({
+				submitting: false,
+				success: false,
+				error: true,
+				message: siteText.contactSection.form.error,
+			});
+		}
 	};
 
 	return (
@@ -480,6 +535,23 @@ function App() {
 							<p className="text-center text-gray-600 mb-8">
 								השאירו פרטים ונחזור אליכם בהקדם לייעוץ ראשוני ללא עלות
 							</p>
+
+							{formStatus.success && (
+								<div
+									className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6"
+									role="alert">
+									<span className="block sm:inline">{formStatus.message}</span>
+								</div>
+							)}
+
+							{formStatus.error && (
+								<div
+									className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6"
+									role="alert">
+									<span className="block sm:inline">{formStatus.message}</span>
+								</div>
+							)}
+
 							<motion.form
 								onSubmit={handleSubmit}
 								className="space-y-6"
@@ -518,6 +590,20 @@ function App() {
 									/>
 								</div>
 								<div>
+									<label htmlFor="email" className="block text-gray-700 mb-2">
+										אימייל (אופציונלי)
+									</label>
+									<input
+										type="email"
+										id="email"
+										value={formData.email}
+										onChange={(e) =>
+											setFormData({ ...formData, email: e.target.value })
+										}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8CAE9D]"
+									/>
+								</div>
+								<div>
 									<label htmlFor="type" className="block text-gray-700 mb-2">
 										סוג הפנייה
 									</label>
@@ -536,8 +622,15 @@ function App() {
 								</div>
 								<button
 									type="submit"
-									className="w-full bg-[#C68A3B] text-white py-3 px-6 rounded-lg hover:bg-[#C68A3B]/90 transition-colors">
-									שלח פנייה
+									disabled={formStatus.submitting}
+									className={`w-full bg-[#C68A3B] text-white py-3 px-6 rounded-lg transition-colors ${
+										formStatus.submitting
+											? 'opacity-70 cursor-not-allowed'
+											: 'hover:bg-[#C68A3B]/90'
+									}`}>
+									{formStatus.submitting
+										? 'שולח...'
+										: siteText.contactSection.form.submit}
 								</button>
 							</motion.form>
 						</motion.div>

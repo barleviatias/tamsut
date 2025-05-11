@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev"
+  port = 8888
+  targetPort = 3000
+  functionsPort = 8889
+  publish = "dist"
+  autoLaunch = true
+  framework = "#custom"
+
+# Uncomment to use environment variables
+# [context.production.environment]
+# VITE_BREVO_API_KEY = "your_brevo_api_key"
+# VITE_BREVO_LEADS_LIST_ID = "your_list_id" 
