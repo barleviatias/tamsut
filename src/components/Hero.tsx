@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { siteText } from '../config';
 
 const Hero: React.FC = () => {
 	return (
@@ -33,7 +34,7 @@ const Hero: React.FC = () => {
 								<div className="w-full h-full overflow-hidden md:rounded-t-[5rem]">
 									<img
 										src="/assets/images/tomer-no-bg.png"
-										alt="תומר תמסות - עורך דין תעבורה"
+										alt={`${siteText.company.name} - ${siteText.company.tagline}`}
 										className="w-full h-full object-cover object-top scale-110"
 										style={{ maxHeight: '90vh' }}
 										width="1000"
@@ -57,20 +58,19 @@ const Hero: React.FC = () => {
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.8 }}>
 						<h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight">
-							ייצוג מקצועי <br />
-							<span className="text-[#C68A3B]">בתיקי תעבורה</span>
+							{siteText.hero.title} <br />
+							<span className="text-[#C68A3B]">{siteText.hero.subtitle}</span>
 						</h1>
 						<p className="text-xl sm:text-2xl mb-8 sm:mb-10 text-gray-200 leading-relaxed max-w-2xl md:mr-0 mr-auto ml-auto">
-							מתמחים בייצוג נהגים בבתי משפט לתעבורה, טיפול בשלילות רישיון,
-							והפחתת נקודות. אנחנו כאן בשבילכם בכל צעד בדרך.
+							{siteText.hero.description}
 						</p>
 						<motion.a
 							href="#contact"
 							className="inline-flex items-center justify-center gap-3 bg-[#C68A3B] text-white px-8 sm:px-10 py-4 rounded-lg text-lg font-medium hover:bg-[#B57A2B] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
-							aria-label="צור קשר">
-							צור קשר
+							aria-label={siteText.hero.cta}>
+							{siteText.hero.cta}
 							<ArrowLeft className="h-6 w-6" aria-hidden="true" />
 						</motion.a>
 					</motion.div>

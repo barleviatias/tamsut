@@ -1,5 +1,6 @@
 import { Phone, Mail, MapPin, Instagram, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { siteText } from '../config';
 
 function Header() {
 	return (
@@ -14,16 +15,16 @@ function Header() {
 							animate={{ opacity: 1, x: 0 }}
 							transition={{ duration: 0.5 }}>
 							<a
-								href="tel:0541234567"
+								href={`tel:${siteText.contact.phone}`}
 								className="flex items-center hover:text-[#C68A3B] transition-colors">
 								<Phone className="w-4 h-4" />
-								<span className="text-sm mr-2">054-1234567</span>
+								<span className="text-sm mr-2">{siteText.contact.phone}</span>
 							</a>
 							<a
-								href="mailto:tomer@tamsot-law.co.il"
+								href={`mailto:${siteText.contact.email}`}
 								className="flex items-center hover:text-[#C68A3B] transition-colors">
 								<Mail className="w-4 h-4" />
-								<span className="text-sm mr-2">tomer@tamsot-law.co.il</span>
+								<span className="text-sm mr-2">{siteText.contact.email}</span>
 							</a>
 						</motion.div>
 
@@ -33,7 +34,7 @@ function Header() {
 							animate={{ opacity: 1, x: 0 }}
 							transition={{ duration: 0.5 }}>
 							<a
-								href="https://wa.me/972541234567"
+								href={`https://wa.me/${siteText.contact.whatsapp}`}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="flex items-center hover:text-[#C68A3B] transition-colors">
@@ -41,7 +42,7 @@ function Header() {
 								<span className="text-sm mr-2">WhatsApp</span>
 							</a>
 							<a
-								href="https://instagram.com/tomer.tamsot"
+								href={`https://instagram.com/${siteText.contact.instagram}`}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="flex items-center hover:text-[#C68A3B] transition-colors">
@@ -65,13 +66,15 @@ function Header() {
 							<div className="w-16 h-16">
 								<img
 									src="/assets/images/logo.png"
-									alt="תומר תמסות לוגו"
+									alt={siteText.company.logo.alt}
 									className="w-full h-full object-contain"
 								/>
 							</div>
 							<div className="mr-6">
-								<h1 className="text-2xl font-bold">תומר תמסות</h1>
-								<p className="text-sm text-[#8CAE9D]">משרד עורכי דין לתעבורה</p>
+								<h1 className="text-2xl font-bold">{siteText.company.name}</h1>
+								<p className="text-sm text-[#8CAE9D]">
+									{siteText.company.tagline}
+								</p>
 							</div>
 						</motion.div>
 
@@ -83,27 +86,27 @@ function Header() {
 							<a
 								href="#about"
 								className="hover:text-[#C68A3B] transition-colors ml-8">
-								חזון
+								{siteText.navigation.vision}
 							</a>
 							<a
 								href="#services"
 								className="hover:text-[#C68A3B] transition-colors ml-8">
-								שירותים
+								{siteText.navigation.services}
 							</a>
 							<a
 								href="#testimonials"
 								className="hover:text-[#C68A3B] transition-colors ml-8">
-								המלצות
+								{siteText.navigation.testimonials}
 							</a>
 							<a
 								href="#about-me"
 								className="hover:text-[#C68A3B] transition-colors ml-8">
-								אודותיי
+								{siteText.navigation.about}
 							</a>
 							<a
 								href="#contact"
 								className="hover:text-[#C68A3B] transition-colors ml-8">
-								צור קשר
+								{siteText.navigation.contact}
 							</a>
 						</motion.nav>
 
@@ -115,7 +118,7 @@ function Header() {
 							<a
 								href="#contact"
 								className="inline-block w-full sm:w-auto bg-[#C68A3B] text-white px-6 py-2 rounded-lg hover:bg-[#B07A2A] transition-colors shadow-lg hover:shadow-xl">
-								ייעוץ ראשוני
+								{siteText.navigation.initialConsult}
 							</a>
 						</motion.div>
 					</div>
