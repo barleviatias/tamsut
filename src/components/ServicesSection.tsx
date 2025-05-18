@@ -22,7 +22,7 @@ export default function ServicesSection() {
 	return (
 		<motion.section
 			id="services"
-			className="py-16 bg-white"
+			className="py-16 bg-[#8CAE9D]/10"
 			initial={{ opacity: 0, y: 50 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true }}
@@ -73,7 +73,7 @@ export default function ServicesSection() {
 					].map((item, index) => (
 						<motion.div
 							key={index}
-							className="bg-[#F8EFE5] p-6 rounded-lg text-center hover:bg-[#F8EFE5]/80 transition-colors duration-300"
+							className="bg-white p-6 rounded-lg text-center hover:bg-gray-50 transition-colors duration-300 shadow-sm"
 							initial={{ opacity: 0, y: 30 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}

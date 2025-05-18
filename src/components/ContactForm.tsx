@@ -169,7 +169,7 @@ export default function ContactForm() {
 									setFormData({ ...formData, details: e.target.value })
 								}
 								rows={4}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8CAE9D]"
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8CAE9D] resize-none"
 							/>
 						</div>
 						<button

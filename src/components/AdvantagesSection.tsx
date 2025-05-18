@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 export default function AdvantagesSection() {
 	return (
 		<motion.section
-			className="py-16 bg-[#8CAE9D]/10"
+			className="py-16 bg-white"
 			initial={{ opacity: 0, y: 50 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true }}
@@ -42,7 +42,7 @@ export default function AdvantagesSection() {
 					].map((item, index) => (
 						<motion.div
 							key={index}
-							className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+							className="bg-[#8CAE9D]/10 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
 							initial={{ opacity: 0, y: 30 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}
