@@ -4,7 +4,8 @@ interface LeadContact {
 	name: string;
 	phone: string;
 	email?: string;
-	type: string;
+	type?: string;
+	details?: string;
 	source?: string;
 }
 
@@ -120,11 +121,21 @@ async function handleAddLead(
 			FIRSTNAME: contactData.name.split(' ')[0] || '',
 			LASTNAME: contactData.name.split(' ').slice(1).join(' ') || '',
 			PHONE: contactData.phone,
-			CONTACT_TYPE: contactData.type,
-			TYPE: contactData.type,
-			INQUIRY_TYPE: contactData.type, // Try multiple formats to ensure compatibility
 			SOURCE: contactData.source || 'website',
 		};
+
+		// Add type if present
+		if (contactData.type) {
+			attributes.CONTACT_TYPE = contactData.type;
+			attributes.TYPE = contactData.type;
+			attributes.INQUIRY_TYPE = contactData.type;
+		}
+
+		// Add details if present
+		if (contactData.details) {
+			attributes.DETAILS = contactData.details;
+			attributes.MESSAGE = contactData.details;
+		}
 
 		createContact.attributes = attributes;
 
@@ -181,6 +192,11 @@ async function handleUpdateContact(
 			attributes.CONTACT_TYPE = data.type;
 			attributes.TYPE = data.type;
 			attributes.INQUIRY_TYPE = data.type; // Try multiple formats to ensure compatibility
+		}
+
+		if (data.details) {
+			attributes.DETAILS = data.details;
+			attributes.MESSAGE = data.details;
 		}
 
 		// Call the Brevo API to update the contact

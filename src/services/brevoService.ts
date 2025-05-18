@@ -3,7 +3,8 @@ export interface LeadContact {
 	name: string;
 	phone: string;
 	email?: string;
-	type: string;
+	type?: string;
+	details?: string;
 	source?: string;
 }
 
