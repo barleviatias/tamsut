@@ -5,55 +5,6 @@ import { siteText } from '../config';
 function Header() {
 	return (
 		<header className="bg-[#23494E] text-white">
-			{/* Top Bar */}
-			<div className="bg-[#1a363a] py-2">
-				<div className="container mx-auto px-4">
-					<div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-						<motion.div
-							className="flex flex-wrap items-center justify-center sm:justify-start gap-4 w-full sm:w-auto"
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5 }}>
-							<a
-								href={`tel:${siteText.contact.phone}`}
-								className="flex items-center hover:text-[#C68A3B] transition-colors">
-								<Phone className="w-4 h-4" />
-								<span className="text-sm mr-2">{siteText.contact.phone}</span>
-							</a>
-							<a
-								href={`mailto:${siteText.contact.email}`}
-								className="flex items-center hover:text-[#C68A3B] transition-colors">
-								<Mail className="w-4 h-4" />
-								<span className="text-sm mr-2">{siteText.contact.email}</span>
-							</a>
-						</motion.div>
-
-						<motion.div
-							className="flex items-center gap-4 mt-2 sm:mt-0"
-							initial={{ opacity: 0, x: 20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5 }}>
-							<a
-								href={`https://wa.me/${siteText.contact.whatsapp}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex items-center hover:text-[#C68A3B] transition-colors">
-								<MessageCircle className="w-4 h-4" />
-								<span className="text-sm mr-2">WhatsApp</span>
-							</a>
-							<a
-								href={`https://instagram.com/${siteText.contact.instagram}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex items-center hover:text-[#C68A3B] transition-colors">
-								<Instagram className="w-4 h-4" />
-								<span className="text-sm mr-2">Instagram</span>
-							</a>
-						</motion.div>
-					</div>
-				</div>
-			</div>
-
 			{/* Main Header */}
 			<div className="py-4">
 				<div className="container mx-auto px-4">
