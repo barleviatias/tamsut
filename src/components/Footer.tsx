@@ -24,15 +24,15 @@ export default function Footer() {
 					<div className="flex justify-center items-center mb-4">
 						<div className="flex flex-col items-center mr-8">
 							<Phone className="w-6 h-6 mb-2" />
-							<span>054-1234567</span>
+							<span>050-7282180</span>
 						</div>
 						<div className="flex flex-col items-center ml-8 mr-8">
 							<Mail className="w-6 h-6 mb-2" />
-							<span>tomer@tamsot-law.co.il</span>
+							<span>tamsutlaw@gmail.com</span>
 						</div>
 						<div className="flex flex-col items-center ml-8">
 							<MapPin className="w-6 h-6 mb-2" />
-							<span>רחוב הרצל 1, תל אביב</span>
+							<span>פריסה ארצית</span>
 						</div>
 					</div>
 				</motion.div>
