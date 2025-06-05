@@ -3,4 +3,4 @@ Allow: /
 Disallow: /private/
 Disallow: /admin/
 
-Sitemap: https://tamsot-law.co.il/sitemap.xml 
+Sitemap: https://tamsut-law.co.il/sitemap.xml 
