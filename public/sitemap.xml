@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://tamsot-law.co.il/</loc>
-    <lastmod>2024-04-17</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://tamsot-law.co.il/assets/images/og-image.jpg</image:loc>
+      <image:title>תומר תמסות - משרד עורכי דין לתעבורה</image:title>
+      <image:caption>עורך דין המתמחה בייצוג נהגים בבתי משפט לתעבורה</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://tamsot-law.co.il/assets/images/logo.png</image:loc>
+      <image:title>לוגו תומר תמסות</image:title>
+      <image:caption>לוגו משרד עורכי דין תומר תמסות</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://tamsot-law.co.il/#about</loc>
-    <lastmod>2024-04-17</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tamsot-law.co.il/#services</loc>
-    <lastmod>2024-04-17</lastmod>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tamsot-law.co.il/#testimonials</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tamsot-law.co.il/#about-me</loc>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tamsot-law.co.il/#contact</loc>
-    <lastmod>2024-04-17</lastmod>
+    <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

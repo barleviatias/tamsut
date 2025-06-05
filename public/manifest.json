@@ -1,0 +1,27 @@
+{
+	"name": "תומר תמסות - משרד עורכי דין לתעבורה",
+	"short_name": "תומר תמסות",
+	"description": "משרד עורכי דין המתמחה בייצוג נהגים בבתי משפט לתעבורה",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#F8EFE5",
+	"theme_color": "#23494E",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/assets/images/logo.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "/assets/images/logo.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any maskable"
+		}
+	],
+	"categories": ["legal", "business", "professional"],
+	"lang": "he",
+	"dir": "rtl"
+}
