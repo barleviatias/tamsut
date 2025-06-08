@@ -122,6 +122,7 @@ async function handleAddLead(
 			LASTNAME: contactData.name.split(' ').slice(1).join(' ') || '',
 			PHONE: contactData.phone,
 			SOURCE: contactData.source || 'website',
+			CAUSE:contactData.details || '',
 		};
 
 		// Add type if present
