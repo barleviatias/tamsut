@@ -8,9 +8,9 @@ const siteText = {
 	},
 	contact: {
 		phone: '054-1234567',
-		email: 'tomer@tamsot-law.co.il',
-		whatsapp: '972541234567',
-		instagram: 'tomer.tamsot',
+		email: 'tomer@tamsut-law.co.il',
+		whatsapp: '+972541234567',
+		instagram: 'tomer.tamsut',
 		location: 'תל אביב',
 	},
 	navigation: {

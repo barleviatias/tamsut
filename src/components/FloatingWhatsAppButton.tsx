@@ -6,7 +6,7 @@ import { siteText } from '../config';
 export default function FloatingWhatsAppButton() {
 	return (
 		<motion.a
-			href={`https://wa.me/${siteText.contact.whatsapp}`}
+			href={`https://wa.link/61sj5y`}
 			target="_blank"
 			rel="noopener noreferrer"
 			className="fixed bottom-8 right-8 z-50"
