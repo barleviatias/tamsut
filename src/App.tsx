@@ -26,6 +26,14 @@ function App() {
 	return (
 		<>
 			<SEO />
+			{/* Google Tag Manager (noscript) - BODY */}
+			<noscript>
+				<iframe
+					src="https://www.googletagmanager.com/ns.html?id=GTM-PDJP4NWF"
+					height="0"
+					width="0"
+					style={{ display: 'none', visibility: 'hidden' }}></iframe>
+			</noscript>
 			<div className="min-h-screen bg-[#F8EFE5]">
 				<Header />
 				<Hero />
