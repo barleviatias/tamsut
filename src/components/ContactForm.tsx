@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { siteText } from '../config';
 import { addLeadToBrevo, LeadContact } from '../services/brevoService';
+import {
+	trackFormSubmission,
+	trackContactAttempt,
+} from '../services/googleAnalytics';
 
 export default function ContactForm() {
 	const [formData, setFormData] = useState({
@@ -41,6 +45,10 @@ export default function ContactForm() {
 			const success = await addLeadToBrevo(leadData);
 
 			if (success) {
+				// Track successful form submission
+				trackFormSubmission('contact-form');
+				trackContactAttempt('form');
+
 				setFormStatus({
 					submitting: false,
 					success: true,

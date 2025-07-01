@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import SEO from './components/SEO';
@@ -10,8 +10,19 @@ import AboutMeSection from './components/AboutMeSection';
 import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
 import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
+import { initializeGA } from './services/googleAnalytics';
 
 function App() {
+	// Initialize Google Analytics when the app loads
+	useEffect(() => {
+		// Initialize GA after scripts are loaded
+		const timer = setTimeout(() => {
+			initializeGA();
+		}, 100);
+
+		return () => clearTimeout(timer);
+	}, []);
+
 	return (
 		<>
 			<SEO />
