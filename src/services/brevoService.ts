@@ -12,7 +12,8 @@ export interface LeadContact {
  * Add a contact to Brevo list and tag them as a lead
  */
 export const addLeadToBrevo = async (
-	contactData: LeadContact
+	contactData: LeadContact,
+	recaptchaToken?: string
 ): Promise<boolean> => {
 	try {
 		// Determine if we're in development mode without netlify functions
@@ -39,6 +40,7 @@ export const addLeadToBrevo = async (
 				body: JSON.stringify({
 					action: 'add-lead',
 					contactData,
+					recaptchaToken,
 				}),
 			});
 		}

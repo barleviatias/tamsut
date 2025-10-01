@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import SEO from './components/SEO';
@@ -24,29 +25,40 @@ function App() {
 	}, []);
 
 	return (
-		<>
-			<SEO />
-			{/* Google Tag Manager (noscript) - BODY */}
-			<noscript>
-				<iframe
-					src="https://www.googletagmanager.com/ns.html?id=GTM-PDJP4NWF"
-					height="0"
-					width="0"
-					style={{ display: 'none', visibility: 'hidden' }}></iframe>
-			</noscript>
-			<div className="min-h-screen bg-[#F8EFE5]">
-				<Header />
-				<Hero />
-				<VisionSection />
-				<ServicesSection />
-				<AdvantagesSection />
-				<TestimonialsSection />
-				<AboutMeSection />
-				<ContactForm />
-				<Footer />
-				<FloatingWhatsAppButton />
-			</div>
-		</>
+		<GoogleReCaptchaProvider
+			reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LdT6torAAAAAPSqvAURI_wBj1bWMU-5I2gEAlzF'}
+			language="he"
+			useRecaptchaNet={false}
+			useEnterprise={false}
+			scriptProps={{
+				async: false,
+				defer: false,
+				appendTo: 'head',
+			}}>
+			<>
+				<SEO />
+				{/* Google Tag Manager (noscript) - BODY */}
+				<noscript>
+					<iframe
+						src="https://www.googletagmanager.com/ns.html?id=GTM-PDJP4NWF"
+						height="0"
+						width="0"
+						style={{ display: 'none', visibility: 'hidden' }}></iframe>
+				</noscript>
+				<div className="min-h-screen bg-[#F8EFE5]">
+					<Header />
+					<Hero />
+					<VisionSection />
+					<ServicesSection />
+					<AdvantagesSection />
+					<TestimonialsSection />
+					<AboutMeSection />
+					<ContactForm />
+					<Footer />
+					<FloatingWhatsAppButton />
+				</div>
+			</>
+		</GoogleReCaptchaProvider>
 	);
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { siteText } from '../config';
 import { addLeadToBrevo, LeadContact } from '../services/brevoService';
 import {
@@ -13,6 +14,10 @@ export default function ContactForm() {
 		phone: '',
 		email: '',
 		details: '',
+		// Honeypot fields (hidden from users)
+		website: '',
+		url: '',
+		company: '',
 	});
 
 	const [formStatus, setFormStatus] = useState({
@@ -21,6 +26,8 @@ export default function ContactForm() {
 		error: false,
 		message: '',
 	});
+
+	const { executeRecaptcha } = useGoogleReCaptcha();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -31,8 +38,45 @@ export default function ContactForm() {
 			message: '',
 		});
 
+		// Execute reCAPTCHA v3
+		if (!executeRecaptcha) {
+			setFormStatus({
+				submitting: false,
+				success: false,
+				error: true,
+				message: 'reCAPTCHA לא זמין כעת',
+			});
+			return;
+		}
+
+		let recaptchaToken: string;
 		try {
-			// Prepare lead contact data
+			recaptchaToken = await executeRecaptcha('contact_form');
+		} catch (error) {
+			console.error('reCAPTCHA execution failed:', error);
+			setFormStatus({
+				submitting: false,
+				success: false,
+				error: true,
+				message: 'שגיאה באימות האבטחה',
+			});
+			return;
+		}
+
+		// Check honeypot fields
+		if (formData.website || formData.url || formData.company) {
+			console.log('Bot detected via honeypot');
+			setFormStatus({
+				submitting: false,
+				success: false,
+				error: true,
+				message: 'שגיאה בשליחת הטופס',
+			});
+			return;
+		}
+
+		try {
+			// Prepare lead contact data (excluding honeypot fields)
 			const leadData: LeadContact = {
 				name: formData.name,
 				phone: formData.phone,
@@ -42,7 +86,7 @@ export default function ContactForm() {
 			};
 
 			// Send the lead to Brevo
-			const success = await addLeadToBrevo(leadData);
+			const success = await addLeadToBrevo(leadData, recaptchaToken);
 
 			if (success) {
 				// Track successful form submission
@@ -62,7 +106,12 @@ export default function ContactForm() {
 					phone: '',
 					email: '',
 					details: '',
+					website: '',
+					url: '',
+					company: '',
 				});
+
+				// No need to reset reCAPTCHA v3 (invisible)
 			} else {
 				throw new Error('Failed to add contact to Brevo');
 			}
@@ -122,6 +171,41 @@ export default function ContactForm() {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ delay: 0.2, duration: 0.6 }}>
+
+						{/* Honeypot fields - hidden from users but visible to bots */}
+						<div style={{ display: 'none' }}>
+							<input
+								type="text"
+								name="website"
+								value={formData.website}
+								onChange={(e) =>
+									setFormData({ ...formData, website: e.target.value })
+								}
+								tabIndex={-1}
+								autoComplete="off"
+							/>
+							<input
+								type="url"
+								name="url"
+								value={formData.url}
+								onChange={(e) =>
+									setFormData({ ...formData, url: e.target.value })
+								}
+								tabIndex={-1}
+								autoComplete="off"
+							/>
+							<input
+								type="text"
+								name="company"
+								value={formData.company}
+								onChange={(e) =>
+									setFormData({ ...formData, company: e.target.value })
+								}
+								tabIndex={-1}
+								autoComplete="off"
+							/>
+						</div>
+
 						<div>
 							<label htmlFor="name" className="block text-gray-700 mb-2">
 								שם מלא
@@ -180,6 +264,9 @@ export default function ContactForm() {
 								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8CAE9D] resize-none"
 							/>
 						</div>
+
+						{/* reCAPTCHA v3 runs invisibly in the background */}
+
 						<button
 							type="submit"
 							disabled={formStatus.submitting}
