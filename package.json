@@ -13,7 +13,7 @@
 		"deploy": "netlify deploy --prod"
 	},
 	"dependencies": {
-		"@getbrevo/brevo": "^2.0.0-beta.0",
+		"@hubspot/api-client": "^13.4.0",
 		"@types/node-fetch": "^2.6.13",
 		"@types/react-helmet": "^6.1.11",
 		"framer-motion": "^12.7.4",

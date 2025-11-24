@@ -1,7 +1,8 @@
 // Environment variable configurations with defaults
 export const env = {
-	BREVO_API_KEY: import.meta.env.VITE_BREVO_API_KEY || '',
-	BREVO_LEADS_LIST_ID: import.meta.env.VITE_BREVO_LEADS_LIST_ID || '2',
+	HUBSPOT_ACCESS_TOKEN: import.meta.env.VITE_HUBSPOT_ACCESS_TOKEN || '',
 	// Google Tag Manager ID
 	GTM_ID: import.meta.env.VITE_GTM_ID || 'GTM-PDJP4NWF', // Your GTM Container ID
+	// WhatsApp Configuration
+	WHATSAPP_PHONE: import.meta.env.VITE_WHATSAPP_PHONE || '972507282180',
 };

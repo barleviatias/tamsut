@@ -2,5 +2,28 @@ User-agent: *
 Allow: /
 Disallow: /private/
 Disallow: /admin/
+Disallow: /.netlify/
+Disallow: /api/
+Disallow: /.env
+
+# Allow major search engines (critical for SEO)
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Googlebot-Mobile
+User-agent: Bingbot
+User-agent: Slurp
+User-agent: DuckDuckBot
+User-agent: Baiduspider
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 0
+
+# Block aggressive scrapers that hurt performance but keep SEO tools
+User-agent: MJ12bot
+User-agent: DotBot
+Disallow: /
+
+# Note: SemrushBot and AhrefsBot are useful for SEO analysis, not blocking them
+# They help with backlink analysis and SEO monitoring
 
 Sitemap: https://tamsut-law.co.il/sitemap.xml 

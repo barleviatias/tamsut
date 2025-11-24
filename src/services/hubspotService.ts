@@ -9,9 +9,9 @@ export interface LeadContact {
 }
 
 /**
- * Add a contact to Brevo list and tag them as a lead
+ * Add a contact to HubSpot CRM
  */
-export const addLeadToBrevo = async (
+export const addLeadToHubSpot = async (
 	contactData: LeadContact,
 	recaptchaToken?: string
 ): Promise<boolean> => {
@@ -24,7 +24,7 @@ export const addLeadToBrevo = async (
 
 		if (isLocalDev) {
 			// In local development without netlify functions, mock the API call
-			console.log('DEV MODE: Mocking Brevo API call with data:', contactData);
+			console.log('DEV MODE: Mocking HubSpot API call with data:', contactData);
 			// Simulate a successful API response
 			response = {
 				ok: true,
@@ -32,7 +32,7 @@ export const addLeadToBrevo = async (
 			} as Response;
 		} else {
 			// Call the Netlify function endpoint
-			response = await fetch('/.netlify/functions/brevo-api', {
+			response = await fetch('/.netlify/functions/hubspot-api', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -49,13 +49,13 @@ export const addLeadToBrevo = async (
 			const errorData = await response.json().catch(() => ({}));
 			console.error('Server response:', errorData);
 			throw new Error(
-				`Failed to add contact to Brevo: ${errorData.error || 'Unknown error'}`
+				`Failed to add contact to HubSpot: ${errorData.error || 'Unknown error'}`
 			);
 		}
 
 		return true;
 	} catch (error) {
-		console.error('Error adding contact to Brevo:', error);
+		console.error('Error adding contact to HubSpot:', error);
 
 		// For local development, return success even if there's an error
 		const isDev = import.meta.env.DEV;
@@ -70,9 +70,9 @@ export const addLeadToBrevo = async (
 };
 
 /**
- * Update an existing contact in Brevo
+ * Update an existing contact in HubSpot
  */
-export const updateBrevoContact = async (
+export const updateHubSpotContact = async (
 	email: string,
 	data: Partial<LeadContact>
 ): Promise<boolean> => {
@@ -85,7 +85,7 @@ export const updateBrevoContact = async (
 
 		if (isLocalDev) {
 			// In local development without netlify functions, mock the API call
-			console.log('DEV MODE: Mocking Brevo API update with data:', {
+			console.log('DEV MODE: Mocking HubSpot API update with data:', {
 				email,
 				data,
 			});
@@ -96,7 +96,7 @@ export const updateBrevoContact = async (
 			} as Response;
 		} else {
 			// Call the Netlify function endpoint
-			response = await fetch('/.netlify/functions/brevo-api', {
+			response = await fetch('/.netlify/functions/hubspot-api', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const updateBrevoContact = async (
 			const errorData = await response.json().catch(() => ({}));
 			console.error('Server response:', errorData);
 			throw new Error(
-				`Failed to update contact in Brevo: ${
+				`Failed to update contact in HubSpot: ${
 					errorData.error || 'Unknown error'
 				}`
 			);
@@ -121,7 +121,7 @@ export const updateBrevoContact = async (
 
 		return true;
 	} catch (error) {
-		console.error('Error updating contact in Brevo:', error);
+		console.error('Error updating contact in HubSpot:', error);
 
 		// For local development, return success even if there's an error
 		const isDev = import.meta.env.DEV;
@@ -136,6 +136,6 @@ export const updateBrevoContact = async (
 };
 
 export default {
-	addLeadToBrevo,
-	updateBrevoContact,
+	addLeadToHubSpot,
+	updateHubSpotContact,
 };

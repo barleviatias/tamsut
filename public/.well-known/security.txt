@@ -1,0 +1,5 @@
+Contact: mailto:info@tamsut-law.co.il
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: he, en
+Canonical: https://tamsut-law.co.il/.well-known/security.txt
+Policy: https://tamsut-law.co.il/security-policy

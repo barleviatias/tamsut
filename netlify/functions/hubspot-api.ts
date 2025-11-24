@@ -1,4 +1,4 @@
-import SibApiV3Sdk from '@getbrevo/brevo';
+import { Client } from '@hubspot/api-client';
 import fetch from 'node-fetch';
 
 // Rate limiting store
@@ -32,7 +32,6 @@ interface NetlifyEvent {
 	isBase64Encoded: boolean;
 }
 
-
 interface HandlerResponse {
 	statusCode: number;
 	headers?: { [header: string]: string | number | boolean };
@@ -43,11 +42,23 @@ interface HandlerResponse {
 exports.handler = async (
 	event: NetlifyEvent
 ): Promise<HandlerResponse> => {
-	// Set CORS headers
+	// Whitelist of allowed origins
+	const allowedOrigins = [
+		'https://tamsut-law.co.il',
+		'https://www.tamsut-law.co.il',
+		'http://localhost:3000',
+		'http://localhost:8888'
+	];
+
+	const origin = event.headers.origin || event.headers.Origin || '';
+	const allowOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+
+	// Set CORS headers with restricted origin
 	const headers = {
-		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Origin': allowOrigin,
 		'Access-Control-Allow-Headers': 'Content-Type',
 		'Access-Control-Allow-Methods': 'POST, OPTIONS',
+		'Access-Control-Max-Age': '86400', // 24 hours
 	};
 
 	// Handle preflight OPTIONS request
@@ -87,7 +98,34 @@ exports.handler = async (
 			};
 		}
 
-		const payload = JSON.parse(event.body);
+		// Validate request body exists
+		if (!event.body || event.body.trim() === '') {
+			return {
+				statusCode: 400,
+				headers,
+				body: JSON.stringify({ error: 'Request body is required' }),
+			};
+		}
+
+		// Prevent large payloads (max 10KB)
+		if (event.body.length > 10240) {
+			return {
+				statusCode: 413,
+				headers,
+				body: JSON.stringify({ error: 'Payload too large' }),
+			};
+		}
+
+		let payload;
+		try {
+			payload = JSON.parse(event.body);
+		} catch (e) {
+			return {
+				statusCode: 400,
+				headers,
+				body: JSON.stringify({ error: 'Invalid JSON payload' }),
+			};
+		}
 		const { action } = payload;
 
 		// Basic request validation
@@ -99,12 +137,10 @@ exports.handler = async (
 			};
 		}
 
-		// Brevo API configuration
-		const apiInstance = new SibApiV3Sdk.ContactsApi();
-		apiInstance.setApiKey(
-			SibApiV3Sdk.ContactsApiApiKeys.apiKey,
-			process.env.VITE_BREVO_API_KEY || ''
-		);
+		// HubSpot API configuration
+		const hubspotClient = new Client({
+			accessToken: process.env.VITE_HUBSPOT_ACCESS_TOKEN || '',
+		});
 
 		// Handle different actions
 		// Validate honeypot
@@ -151,13 +187,13 @@ exports.handler = async (
 						body: JSON.stringify({ error: validation.error }),
 					};
 				}
-				return await handleAddLead(payload.contactData, apiInstance, headers);
+				return await handleAddLead(payload.contactData, hubspotClient, headers);
 			}
 			case 'update-contact':
 				return await handleUpdateContact(
 					payload.email,
 					payload.data,
-					apiInstance,
+					hubspotClient,
 					headers
 				);
 			default:
@@ -168,7 +204,7 @@ exports.handler = async (
 				};
 		}
 	} catch (error) {
-		console.error('Error in Brevo API function:', error);
+		console.error('Error in HubSpot API function:', error);
 		return {
 			statusCode: 500,
 			headers,
@@ -347,59 +383,65 @@ async function verifyRecaptcha(token: string): Promise<{ success: boolean; score
 
 async function handleAddLead(
 	contactData: LeadContact,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	apiInstance: any,
+	hubspotClient: Client,
 	headers: Record<string, string>
 ): Promise<HandlerResponse> {
 	try {
-		// Create an instance of the API class
-		const createContact = new SibApiV3Sdk.CreateContact();
-
-		// Prepare the contact data
-		createContact.email =
-			contactData.email ||
-			`${contactData.phone.replace(/\D/g, '')}@placeholder.com`;
-
-		// Create attributes with proper typing
-		const attributes: Record<string, string> = {
-			FIRSTNAME: contactData.name.split(' ')[0] || '',
-			LASTNAME: contactData.name.split(' ').slice(1).join(' ') || '',
-			PHONE: contactData.phone,
-			SOURCE: contactData.source || 'website',
-			CAUSE:contactData.details || '',
+		// Prepare properties for HubSpot contact
+		const properties: Record<string, string> = {
+			firstname: contactData.name.split(' ')[0] || '',
+			lastname: contactData.name.split(' ').slice(1).join(' ') || '',
+			phone: contactData.phone,
 		};
 
-		// Add type if present
-		if (contactData.type) {
-			attributes.CONTACT_TYPE = contactData.type;
-			attributes.TYPE = contactData.type;
-			attributes.INQUIRY_TYPE = contactData.type;
+		// Add email if provided, otherwise use placeholder
+		if (contactData.email) {
+			properties.email = contactData.email;
+		} else {
+			// HubSpot requires either email or phone as unique identifier
+			// Use phone as the identifier
+			properties.email = `${contactData.phone.replace(/\D/g, '')}@placeholder.com`;
 		}
 
-		// Add details if present
+		// Add custom properties
+		if (contactData.source) {
+			properties.hs_lead_source = contactData.source;
+		}
+
 		if (contactData.details) {
-			attributes.DETAILS = contactData.details;
-			attributes.MESSAGE = contactData.details;
+			properties.message = contactData.details;
 		}
 
-		createContact.attributes = attributes;
+		if (contactData.type) {
+			properties.contact_type = contactData.type;
+		}
 
-		// Add to the leads list
-		createContact.listIds = [
-			parseInt(process.env.VITE_BREVO_LEADS_LIST_ID || '2'),
-		];
+		// Create contact in HubSpot
+		const response = await hubspotClient.crm.contacts.basicApi.create({
+			properties: properties,
+			associations: []
+		});
 
-		// Call the Brevo API to create the contact
-		const response = await apiInstance.createContact(createContact);
-		console.log('Contact added to Brevo successfully:', response);
+		console.log('Contact added to HubSpot successfully:', response);
 
 		return {
 			statusCode: 200,
 			headers,
 			body: JSON.stringify({ success: true }),
 		};
-	} catch (error) {
-		console.error('Error adding contact to Brevo:', error);
+	} catch (error: any) {
+		// Handle duplicate contact error (contact already exists)
+		if (error?.body?.category === 'CONFLICT') {
+			console.log('Contact already exists in HubSpot, updating instead');
+			// If contact exists, you could update it here
+			return {
+				statusCode: 200,
+				headers,
+				body: JSON.stringify({ success: true, message: 'Contact already exists' }),
+			};
+		}
+
+		console.error('Error adding contact to HubSpot:', error);
 		return {
 			statusCode: 500,
 			headers,
@@ -413,49 +455,67 @@ async function handleAddLead(
 async function handleUpdateContact(
 	email: string,
 	data: Partial<LeadContact>,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	apiInstance: any,
+	hubspotClient: Client,
 	headers: Record<string, string>
 ): Promise<HandlerResponse> {
 	try {
-		// Create an instance of the API class
-		const updateContact = new SibApiV3Sdk.UpdateContact();
-
-		// Prepare the update data with proper typing
-		const attributes: Record<string, string> = {};
-		updateContact.attributes = attributes;
+		// Prepare properties for update
+		const properties: Record<string, string> = {};
 
 		if (data.name) {
-			attributes.FIRSTNAME = data.name.split(' ')[0] || '';
-			attributes.LASTNAME = data.name.split(' ').slice(1).join(' ') || '';
+			properties.firstname = data.name.split(' ')[0] || '';
+			properties.lastname = data.name.split(' ').slice(1).join(' ') || '';
 		}
 
 		if (data.phone) {
-			attributes.PHONE = data.phone;
+			properties.phone = data.phone;
 		}
 
 		if (data.type) {
-			attributes.CONTACT_TYPE = data.type;
-			attributes.TYPE = data.type;
-			attributes.INQUIRY_TYPE = data.type; // Try multiple formats to ensure compatibility
+			properties.contact_type = data.type;
 		}
 
 		if (data.details) {
-			attributes.DETAILS = data.details;
-			attributes.MESSAGE = data.details;
+			properties.message = data.details;
 		}
 
-		// Call the Brevo API to update the contact
-		await apiInstance.updateContact(email, updateContact);
-		console.log('Contact updated in Brevo successfully');
+		// Search for contact by email first
+		const searchResponse = await hubspotClient.crm.contacts.searchApi.doSearch({
+			filterGroups: [{
+				filters: [{
+					propertyName: 'email',
+					operator: 'EQ',
+					value: email
+				}]
+			}],
+			properties: ['email'],
+			limit: 1
+		});
 
-		return {
-			statusCode: 200,
-			headers,
-			body: JSON.stringify({ success: true }),
-		};
+		if (searchResponse.results && searchResponse.results.length > 0) {
+			const contactId = searchResponse.results[0].id;
+
+			// Update the contact
+			await hubspotClient.crm.contacts.basicApi.update(contactId, {
+				properties: properties
+			});
+
+			console.log('Contact updated in HubSpot successfully');
+
+			return {
+				statusCode: 200,
+				headers,
+				body: JSON.stringify({ success: true }),
+			};
+		} else {
+			return {
+				statusCode: 404,
+				headers,
+				body: JSON.stringify({ error: 'Contact not found' }),
+			};
+		}
 	} catch (error) {
-		console.error('Error updating contact in Brevo:', error);
+		console.error('Error updating contact in HubSpot:', error);
 		return {
 			statusCode: 500,
 			headers,

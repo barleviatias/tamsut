@@ -17,7 +17,8 @@
 .env.test.local
 .env.production.local
 .env
-.env.example
+
+# Note: .env.example should be committed (it's a template without secrets)
 
 # Logs
 npm-debug.log*
