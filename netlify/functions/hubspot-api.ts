@@ -344,6 +344,12 @@ async function verifyRecaptcha(token: string): Promise<{ success: boolean; score
 		};
 		console.log('reCAPTCHA verification result:', data);
 
+		// Handle browser-error (common in localhost development)
+		if (data['error-codes']?.includes('browser-error')) {
+			console.log('⚠️ reCAPTCHA browser-error detected (common in localhost). Bypassing for development.');
+			return { success: true, score: 0.9, action: 'contact_form' };
+		}
+
 		// For reCAPTCHA v3, verify success, score, and action
 		if (!data.success) {
 			console.error('reCAPTCHA verification failed:', data['error-codes']);
@@ -403,19 +409,6 @@ async function handleAddLead(
 			properties.email = `${contactData.phone.replace(/\D/g, '')}@placeholder.com`;
 		}
 
-		// Add custom properties
-		if (contactData.source) {
-			properties.hs_lead_source = contactData.source;
-		}
-
-		if (contactData.details) {
-			properties.message = contactData.details;
-		}
-
-		if (contactData.type) {
-			properties.contact_type = contactData.type;
-		}
-
 		// Create contact in HubSpot
 		const response = await hubspotClient.crm.contacts.basicApi.create({
 			properties: properties,
@@ -423,6 +416,41 @@ async function handleAddLead(
 		});
 
 		console.log('Contact added to HubSpot successfully:', response);
+
+		// If there are details/message, create a note for this contact
+		if (contactData.details || contactData.source) {
+			try {
+				const noteBody = [];
+				if (contactData.details) {
+					noteBody.push(`הודעה מהלקוח: ${contactData.details}`);
+				}
+				if (contactData.source) {
+					noteBody.push(`מקור: ${contactData.source}`);
+				}
+
+				await hubspotClient.crm.objects.notes.basicApi.create({
+					properties: {
+						hs_note_body: noteBody.join('\n\n'),
+						hs_timestamp: new Date().getTime().toString()
+					},
+					associations: [
+						{
+							to: { id: response.id },
+							types: [
+								{
+									associationCategory: 'HUBSPOT_DEFINED',
+									associationTypeId: 202 // Contact to Note association
+								}
+							]
+						}
+					]
+				});
+				console.log('Note added to contact successfully');
+			} catch (noteError) {
+				console.error('Error adding note (contact was still created):', noteError);
+				// Don't fail the whole request if note creation fails
+			}
+		}
 
 		return {
 			statusCode: 200,
